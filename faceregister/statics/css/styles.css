@@ -1,0 +1,35 @@
+body {
+  background-color: #2b2b2b;
+  color: #fff;
+}
+
+h1, h2 {
+  color: #fff;
+}
+
+.login-box {
+  background-color: #fff;
+  border-radius: 10px;
+}
+
+.login-box h2 {
+  color: #333;
+}
+
+.btn-dark {
+  background-color: #333;
+  border-color: #333;
+}
+
+.btn-dark:hover {
+  background-color: #444;
+  border-color: #444;
+}
+
+.text-muted {
+  color: #999 !important;
+}
+
+a.text-muted:hover {
+  color: #fff !important;
+}
