@@ -1,10 +1,13 @@
-from django.contrib import admin
 from django.urls import path
-from .views import index, second, telaaluno
+
+from .views import index, perfilaluno, perfilprof, loginprof, loginaluno, cadastroaluno, cadastroprof
 
 urlpatterns = [
     path('', index, name='index'),
-    path('second/', second, name='second'),
-    path('telaaluno/', telaaluno, name='telaaluno'),
-
+    path('perfilaluno/', perfilaluno, name='perfilaluno'),
+    path('perfilprof/', perfilprof, name='perfilprof'),
+    path('loginprof/', loginprof, name='loginprof'),
+    path('loginaluno/', loginaluno, name='loginaluno'),
+    path('cadastroaluno/', cadastroaluno, name='cadastroaluno'),
+    path('cadastroprof/', cadastroprof, name='cadastroprof'),
 ]

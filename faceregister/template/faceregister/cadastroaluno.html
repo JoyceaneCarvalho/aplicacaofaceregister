@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FaceRegister - Cadastro Aluno</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="row w-100">
+      <div class="col-md-6 d-flex flex-column align-items-center justify-content-center text-center">
+        <div class="logo">
+          <h1 class="mb-4">FaceRegister</h1>
+        </div>
+      </div>
+
+      <!-- Formulário de Cadastro de Aluno -->
+      <div class="col-md-6">
+        <div class="registration-box p-4 shadow">
+          <h2 class="text-center mb-4">Cadastro de Aluno</h2>
+          <form id="cadastroForm">
+            <div class="mb-3">
+              <label for="nome" class="form-label">Nome Completo</label>
+              <input type="text" class="form-control" id="nome" placeholder="Digite seu nome completo" required>
+            </div>
+            <div class="mb-3">
+              <label for="matricula" class="form-label">Matrícula</label>
+              <input type="text" class="form-control" id="matricula" placeholder="Digite sua matrícula" required>
+            </div>
+            <div class="mb-3">
+              <label for="curso" class="form-label">Curso</label>
+              <input type="text" class="form-control" id="curso" placeholder="Digite seu curso" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" placeholder="Digite seu email" required>
+            </div>
+            <div class="mb-3">
+              <label for="foto" class="form-label">Foto</label>
+              <input type="file" class="form-control" id="foto" accept="image/*" required>
+            </div>
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-dark">Cadastrar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('cadastroForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Previne o envio do formulário
+
+      // Obtém os valores dos inputs
+      const nome = document.getElementById('nome').value;
+      const matricula = document.getElementById('matricula').value;
+      const curso = document.getElementById('curso').value;
+      const email = document.getElementById('email').value;
+      const foto = document.getElementById('foto').files[0]; // Foto como arquivo
+
+      // Verifica se a foto foi selecionada
+      if (foto) {
+        const reader = new FileReader();
+
+        // Exibe mensagem no console para depuração
+        console.log('Iniciando leitura da foto...');
+
+        reader.onload = function(e) {
+          // Armazena os dados no localStorage
+          localStorage.setItem('nome', nome);
+          localStorage.setItem('matricula', matricula);
+          localStorage.setItem('curso', curso);
+          localStorage.setItem('email', email);
+          localStorage.setItem('foto', e.target.result); // Armazena a foto como base64
+
+          console.log('Dados salvos com sucesso no localStorage.');
+
+          // Redireciona para a página de perfil após salvar todos os dados
+          window.location.href = 'perfilaluno.html';
+        };
+
+        reader.onerror = function(error) {
+          console.error('Erro ao carregar a imagem: ', error);
+        };
+
+        reader.readAsDataURL(foto); // Converte a foto em Base64
+      } else {
+        alert('Por favor, selecione uma foto.');
+      }
+    });
+  </script>
+</body>
+</html>
