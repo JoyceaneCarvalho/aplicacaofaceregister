@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Frequência</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #fff; /* Fundo branco */
+            color: #333;
+            font-family: Arial, sans-serif;
+            margin: 0; /* Remove margens */
+            padding: 0; /* Remove preenchimento */
+        }
+
+        .container-fluid {
+            margin: 30px auto; /* Centraliza o container */
+            max-width: 1200px; /* Largura máxima */
+            padding: 20px; /* Preenchimento interno */
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: bold;
+            color: #000; /* Cor do título */
+        }
+
+        .table {
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #f8f9fa; /* Fundo claro da tabela */
+            color: #000; /* Texto em preto */
+        }
+
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 12px;
+            font-size: 14px;
+            color: #000; /* Texto em preto para as células */
+        }
+
+        .table th {
+            background-color: #000; /* Cor de fundo preta para cabeçalhos */
+            color: #fff; /* Texto em branco para cabeçalhos */
+        }
+
+        .table-striped tbody tr:nth-child(odd) {
+            background-color: #f2f2f2; /* Cor das linhas ímpares */
+        }
+
+        .table-striped tbody tr:nth-child(even) {
+            background-color: #fff; /* Cor das linhas pares (branca) */
+        }
+
+        .crud-actions button {
+            margin: 0 5px;
+            border-radius: 5px;
+        }
+
+        .modal-content {
+            border-radius: 10px;
+            background-color: #f8f9fa; /* Fundo do modal */
+            color: #000; /* Texto em preto */
+        }
+
+        .modal-header {
+            background-color: #e9ecef; /* Cor do cabeçalho do modal */
+            border-bottom: none;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .btn {
+            border-radius: 5px;
+        }
+
+        .btn-warning {
+            background-color: #ffb74d; /* Cor dos botões de aviso */
+            color: #333; /* Texto em preto */
+        }
+
+        .btn-dark {
+            background-color: #000; /* Cor dos botões escuros */
+            border-color: #000;
+            color: #fff; /* Texto em branco */
+        }
+
+        .btn-dark:hover {
+            background-color: #333; /* Cor de hover mais escura */
+            border-color: #333;
+        }
+
+        .text-muted {
+            color: #999 !important;
+        }
+
+        a.text-muted:hover {
+            color: #000 !important;
+        }
+
+        .form-control {
+            background-color: #e9f3ff; /* Azul claro para os inputs */
+            color: #000; /* Texto em preto */
+            border: 1px solid #ced4da; /* Borda cinza */
+            border-radius: 5px;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #007bff; /* Borda azul ao focar */
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid"> <!-- Container para tela cheia -->
+        <div class="header">
+            <h1>Consulta de Frequência</h1>
+            <p class="text-muted">Visualize suas frequências registradas e solicite correções de ausência.</p>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Data</th>
+                    <th scope="col">Disciplina</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="frequenciaTable">
+                <!-- As frequências serão preenchidas aqui dinamicamente -->
+            </tbody>
+        </table>
+
+        <!-- Modal para solicitar mudança de status -->
+        <div class="modal fade" id="modalSolicitacao" tabindex="-1" aria-labelledby="modalSolicitacaoLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalSolicitacaoLabel">Solicitar Correção de Frequência</h5>
+                        <button type="button" class="btn-close btn-dark" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formSolicitacao">
+                            <p>Justifique sua solicitação</p>
+                            <div class="mb-3">
+                                <label for="justificativa" class="form-label">Justificativa:</label>
+                                <textarea class="form-control" id="justificativa" rows="3" required></textarea>
+                            </div>
+                            <input type="hidden" id="solicitacaoId">
+                            <button type="submit" class="btn btn-dark">Confirmar Solicitação</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let frequencias = [
+            { id: 1, data: '2024-09-01', disciplina: 'Desenvolvimento Web', status: 'Presente' },
+            { id: 2, data: '2024-09-02', disciplina: 'Lógica Matemática', status: 'Presente' },
+            { id: 3, data: '2024-09-03', disciplina: 'Banco de Dados', status: 'Ausente' }
+        ];
+
+        function loadFrequencias() {
+            const table = document.getElementById('frequenciaTable');
+            table.innerHTML = '';
+            frequencias.forEach(frequencia => {
+                table.innerHTML += `
+                    <tr>
+                        <td>${frequencia.data}</td>
+                        <td>${frequencia.disciplina}</td>
+                        <td>${frequencia.status}</td>
+                        <td class="crud-actions">
+                            ${frequencia.status === 'Ausente' ? `<button class="btn btn-warning btn-sm" onclick="solicitarMudanca(${frequencia.id})">Solicitar Mudança</button>` : ''}
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function solicitarMudanca(id) {
+            document.getElementById('solicitacaoId').value = id;
+            const modal = new bootstrap.Modal(document.getElementById('modalSolicitacao'));
+            modal.show();
+        }
+
+        document.getElementById('formSolicitacao').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const id = document.getElementById('solicitacaoId').value;
+            const justificativa = document.getElementById('justificativa').value;
+            alert(`Solicitação de mudança de status enviada para a frequência com ID ${id}.\nJustificativa: ${justificativa}`);
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalSolicitacao'));
+            modal.hide();
+        });
+
+        loadFrequencias();
+    </script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultar Frequência dos Alunos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffffff; /* Fundo branco */
+            color: #000; /* Texto em preto */
+            font-family: Arial, sans-serif;
+            margin: 0; /* Remove margens */
+            padding: 0; /* Remove preenchimento */
+        }
+
+        .container {
+            margin: 30px auto; /* Centraliza o container */
+            max-width: 1200px; /* Largura máxima */
+            padding: 20px; /* Preenchimento interno */
+        }
+
+        .header {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000; /* Cor do título */
+        }
+
+        .form-label {
+            color: #000; /* Cor das labels */
+        }
+
+        .form-control {
+            background-color: #f8f9fa; /* Fundo claro para os inputs */
+            color: #000; /* Texto em preto */
+            border: 1px solid #ced4da; /* Borda cinza */
+            border-radius: 5px;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #007bff; /* Borda azul ao focar */
+        }
+
+        .table {
+            margin-top: 20px;
+        }
+
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .crud-actions button {
+            margin: 0 5px;
+        }
+
+        .btn-dark {
+            background-color: #000; /* Cor preta */
+            border-color: #000; /* Borda preta */
+            color: #fff; /* Texto em branco */
+            margin-top: 20px;
+        }
+
+        .btn-dark:hover {
+            background-color: #333; /* Cinza escuro ao passar o mouse */
+            border-color: #333; /* Borda cinza escuro */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Consultar Frequência dos Alunos</h1>
+            <p class="text-muted">Veja e gerencie o histórico de frequência dos alunos.</p>
+        </div>
+
+        <!-- Formulário para inserir nova frequência -->
+        <div class="mb-4">
+            <h5>Inserir Nova Frequência</h5>
+            <form id="formInserirFrequencia">
+                <div class="row">
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" id="novoAluno" placeholder="Aluno" required>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" id="novaMatricula" placeholder="Matrícula" required>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" class="form-control" id="novaData" required>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" id="novaDisciplina" placeholder="Disciplina" required>
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <select class="form-control" id="novoStatus">
+                            <option value="Presente">Presente</option>
+                            <option value="Ausente">Ausente</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <button type="submit" class="btn btn-dark">Adicionar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tabela de Frequências -->
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Aluno</th>
+                        <th scope="col">Matrícula</th>
+                        <th scope="col">Data</th>
+                        <th scope="col">Disciplina</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="frequenciaTable">
+                    <!-- As frequências serão preenchidas aqui dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let frequencias = [
+            { id: 1, aluno: 'João Silva', matricula: '2023001', data: '2024-09-01', disciplina: 'Matemática', status: 'Presente' },
+            { id: 2, aluno: 'Ana Souza', matricula: '2023002', data: '2024-09-01', disciplina: 'Matemática', status: 'Ausente' },
+            { id: 3, aluno: 'Carlos Pereira', matricula: '2023003', data: '2024-09-02', disciplina: 'História', status: 'Presente' },
+            { id: 4, aluno: 'Maria Oliveira', matricula: '2023004', data: '2024-09-02', disciplina: 'História', status: 'Ausente' }
+        ];
+
+        function loadFrequencias() {
+            const table = document.getElementById('frequenciaTable');
+            table.innerHTML = '';
+            frequencias.forEach(frequencia => {
+                table.innerHTML += `
+                    <tr>
+                        <td>${frequencia.aluno}</td>
+                        <td>${frequencia.matricula}</td>
+                        <td>${frequencia.data}</td>
+                        <td>${frequencia.disciplina}</td>
+                        <td>${frequencia.status}</td>
+                        <td class="crud-actions">
+                            <button class="btn btn-warning btn-sm" onclick="editarFrequencia(${frequencia.id})">Editar</button>
+                            <button class="btn btn-danger btn-sm" onclick="excluirFrequencia(${frequencia.id})">Excluir</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Inserir nova frequência
+        document.getElementById('formInserirFrequencia').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const novoAluno = document.getElementById('novoAluno').value;
+            const novaMatricula = document.getElementById('novaMatricula').value;
+            const novaData = document.getElementById('novaData').value;
+            const novaDisciplina = document.getElementById('novaDisciplina').value;
+            const novoStatus = document.getElementById('novoStatus').value;
+
+            const novaFrequencia = {
+                id: frequencias.length + 1,
+                aluno: novoAluno,
+                matricula: novaMatricula,
+                data: novaData,
+                disciplina: novaDisciplina,
+                status: novoStatus
+            };
+
+            frequencias.push(novaFrequencia);
+            loadFrequencias();
+
+            document.getElementById('formInserirFrequencia').reset();
+        });
+
+        // Editar frequência
+        function editarFrequencia(id) {
+            // Implementar lógica de edição
+        }
+
+        // Excluir frequência
+        function excluirFrequencia(id) {
+            frequencias = frequencias.filter(f => f.id !== id);
+            loadFrequencias();
+        }
+
+        loadFrequencias();
+    </script>
+</body>
+</html>

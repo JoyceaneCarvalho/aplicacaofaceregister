@@ -29,6 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
+    'localhost'
 ]
 
 
@@ -127,7 +128,6 @@ STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 
 STATICFILES_DIRS = [
     'statics',
-    'media'
 ]
 
 MEDIA_URL = '/media/'

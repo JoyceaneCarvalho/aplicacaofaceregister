@@ -6,10 +6,13 @@ def index(request):
     return render(request, 'index.html')
 
 def perfilaluno(request):
-    return render(request, 'faceregister/cadastroaluno/perfilaluno.html')
+    return render(request, 'faceregister/perfilaluno.html')
+
+def consfrequencia(request):
+    return render(request, 'faceregister/consfrequencia.html')
 
 def perfilprof(request):
-    return render(request, 'faceregister/cadastroaluno/perfilprof.html')
+    return render(request, 'faceregister/perfilprof.html')
 
 def loginprof(request):
     return render(request, 'faceregister/loginprof.html')
@@ -23,7 +26,13 @@ def cadastroaluno(request):
 def cadastroprof(request):
     return render(request, 'faceregister/cadastroprof.html')
 
+def realizarfreq(request):
+    return render(request, 'faceregister/realizarfreq.html')
 
+def consfrequencia_prof(request):
+    return render(request, 'faceregister/consfrequencia_prof.html')
 
+def cadaluno(request):
+    return render(request, 'faceregister/cadaluno.html')
 
 
